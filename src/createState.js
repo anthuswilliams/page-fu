@@ -1,10 +1,48 @@
 import ensureNextIsCalled from './ensureNextIsCalled';
 
 /**
- * A container for a state-transitioning object.
+ * @module
+ * @preserveOrder
+ *
+ * Decorate your route with the ability to transition between (internal) states.
+ * That state will be purged upon entering and exiting the route so you do not
+ * need to manage it.
+ *
+ * Here's an example that tracks an internal counter and outputs it to the
+ * console when it changes:
+ *
+ *     import { createState } from 'page-fu';
+ *
+ *     export default createState({
+ *       getInitialState() {
+ *         return { value: 0 };
+ *       },
+ *
+ *       enter() {
+ *         this.renderValue(); // => "Value = 0"
+ *         this.increment();
+ *       },
+ *
+ *       stateDidChange() {
+ *         this.renderValue(); // => "Value = 1"
+ *       },
+ *
+ *       renderValue() {
+ *         console.log('Value = %d', this.state.value)
+ *       },
+ *
+ *       increment() {
+ *         this.setState({
+ *           value: this.state.value + 1
+ *         });
+ *       }
+ *     })
+ *
+ * @param {Route} instance
+ * @return {Route}
  */
 export default function createState(instance) {
-  const { enter, exit } = instance;
+  const { enter = Function.prototype, exit = Function.prototype } = instance;
   const state = {};
   const emitChange = function() {
     this.stateDidChange();
@@ -31,17 +69,17 @@ export default function createState(instance) {
     },
 
     /**
-     * @lends Route
-     * @property {Object} state
+     * @property {Object}
      *
-     * The route's internal state which can be mutated using the
-     * state routines.
+     * The route's internal state which can be mutated using the state routines.
      */
     state,
 
     /**
-     * @lends Route
-     * @property {Function}
+     * @method
+     *
+     * A producer for the initial state the container should start in. The
+     * output of this method will be used when clearing the container as well.
      *
      * @return {Object}
      *         The initial state definition.
@@ -49,9 +87,7 @@ export default function createState(instance) {
     getInitialState: instance.getInitialState || Function.prototype,
 
     /**
-     * @lends Route
-     *
-     * Transition to a new state.
+     * Transition to a new state, overwriting any existing keys.
      *
      * @param {Object} partialState
      */
@@ -62,8 +98,6 @@ export default function createState(instance) {
     },
 
     /**
-     * @lends Route
-     *
      * Transition to an entirely new state, replacing the old one.
      *
      * @param  {Object} newState
@@ -75,8 +109,6 @@ export default function createState(instance) {
     },
 
     /**
-     * @lends Route
-     *
      * Reset the state.
      */
     clearState() {
@@ -84,13 +116,13 @@ export default function createState(instance) {
     },
 
     /**
-     * @lends Route
-     * @property {Function} stateDidChange
+     * @method
      *
-     * A callback to invoke when the state has changed through calls to
-     * [[setState]], [[replaceState]] or [[clearState]].
+     * A hook that is invoked when the state changes through calls to
+     * [[#setState]], [[#replaceState]] or [[#clearState]].
      *
-     * This callback will NOT be fired if the route is not active.
+     * > This hook will NOT be invoked if you're using the [[activation guard
+     * > | ./installActivationGuard.js]] and the route is not active.
      */
     stateDidChange: instance.stateDidChange || Function.prototype,
   })

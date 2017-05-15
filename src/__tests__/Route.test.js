@@ -97,4 +97,45 @@ describe('page-fu.Route', function() {
       assert.notCalled(animalExit)
     });
   });
+
+  describe('public APIs', function() {
+    const MyRoute = Route({
+      getInitialState() {
+        return {
+          user: { id: '1' }
+        };
+      },
+
+      enter() {},
+
+      getUserId() {
+        return this.state.user && this.state.user.id || null;
+      }
+    })
+
+    it('leaves APIs defined in the spec untouched', function() {
+      const subject = MyRoute;
+
+      assert.equal(typeof subject.getUserId, 'function');
+      assert.equal(subject.getUserId(), null);
+
+      subject.setState({
+        user: { id: '1' }
+      })
+
+      assert.equal(subject.getUserId(), '1');
+    })
+  })
+
+  describe('construction', function() {
+    const subject = Route();
+
+    afterEach(function(done) {
+      subject.exit({}, done);
+    })
+
+    it('can be created and destroyed', function() {
+      subject.enter({});
+    })
+  });
 });

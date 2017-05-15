@@ -2,41 +2,77 @@ import queryString from 'query-string';
 import history from './history';
 import ensureNextIsCalled from './ensureNextIsCalled';
 
+/**
+ * @module
+ *
+ * Inject named parameters and query parameters as "[[props |
+ * createProps~Props]]" into your route.
+ *
+ *     import { createProps } from 'page-fu'
+ *     import page from 'page'
+ *
+ *     const Route = createProps({
+ *       enter() {
+ *         console.log(this.props.params)
+ *         console.log(this.props.query)
+ *       },
+ *
+ *       queryParamsDidChange() {
+ *         console.log('woah!');
+ *       }
+ *     })
+ *
+ *     page('/users/:userId', Route.enter)
+ *     page.exit('/users/:userId', Route.exit)
+ *
+ *     location.hash = '#/users/1?nameFilter=a'
+ *
+ *     // => { userId: "1" }
+ *     // => { nameFilter: "a" }
+ *
+ *     location.hash = '#/users/1?nameFilter=b'
+ *
+ *     // => "woah!"
+ *
+ *
+ * @param {Object} route
+ * @return {Object}
+ *
+ * @typedef {createProps~Props}
+ *          A map of props computed from page's context and the URL that
+ *          the route will be injected with.
+ *
+ * @property {Object.<String, String>} params
+ *           The parameters that the route was activated with (that is, what's
+ *           found in `ctx.params` from page's context.)
+ *
+ * @property {Object.<String, String>} query
+ *           The current query parameters.
+ *
+ * @property {Object} location
+ * @property {String} location.pathname
+ *
+ */
 export default function createProps(instance) {
-  const { enter, exit } = instance;
+  const { enter = Function.prototype, exit = Function.prototype } = instance;
 
   let stopListeningToHistory;
 
   return Object.assign({}, instance, {
+
     /**
-     * @lends Route
-     *
-     * @property {Object} props
-     * @property {Object} props.params
-     *           The parameters that the route was activated with.
-     *
-     * @property {Object} props.query
-     *           The current query parameters.
+     * @property {createProps~Props} [props={}]
      */
     props: null,
 
     /**
-     * @lends Route
-     * @property {Function} queryParamsDidChange
+     * @method
      *
-     * A callback to invoke when the query parameters have changed through calls
-     * to [[updateQuery]] or [[replaceQuery]].
+     * A hook that will be invoked when the query parameters change through
+     * calls to [[Router.updateQuery]] or [[Router.replaceQuery]].
      */
     queryParamsDidChange: instance.queryParamsDidChange || Function.prototype,
 
-    /**
-     * The `enter` routine that gets called when the route is activated.
-     *
-     * @param {page.Context} ctx
-     * @param {Function} next
-     *        Call this if you do not want to activate the route and instead
-     *        forward to the next one.
-     */
     enter(ctx, next) {
       stopListeningToHistory = history.listen(location => {
         this.props.query = queryString.parse(location.search);
@@ -54,17 +90,6 @@ export default function createProps(instance) {
       enter.call(this, ctx, next);
     },
 
-    /**
-     * The routine that gets called when the route is about to become
-     * deactivated.
-     *
-     * @param  {page.Context}   ctx
-     *         page.js context object.
-     *
-     * @param  {Function} next
-     *         Function to invoke when you're done cleaning up. If you do not
-     *         call this, the route will never be exited.
-     */
     exit(ctx, next) {
       ensureNextIsCalled(exit.bind(this), ctx, (err) => {
         stopListeningToHistory();

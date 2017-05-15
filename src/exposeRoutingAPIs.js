@@ -1,28 +1,47 @@
 import { redirectTo, transitionTo, updateQuery, replaceQuery } from '../';
 
+/**
+ * @module
+ *
+ * A cute and simple decorator that allows direct access to the [[router |
+ * Router]]'s primary routines.
+ *
+ * For example:
+ *
+ *     import { exposeRoutingAPIs } from 'page-fu';
+ *
+ *     export default exposeRoutingAPIs({
+ *       enter() {
+ *         this.transitionTo('/foo'); // => Router.transitionTo('/foo');
+ *       }
+ *     })
+ *
+ * @param {Object} route
+ * @return {Object} route
+ */
 export default function exposeRoutingAPIs(instance) {
   return Object.assign({}, instance, {
     /**
-     * @lends Route
-     * @see Router.redirectTo
+     * @type {Function} redirectTo
+     * Forwards to [[Router.redirectTo]]
      */
     redirectTo,
 
     /**
-     * @lends Route
-     * @see Router.replaceQuery
+     * @type {Function} replaceQuery
+     * Forwards to [[Router.replaceQuery]]
      */
     replaceQuery,
 
     /**
-     * @lends Route
-     * @see Router.transitionTo
+     * @type {Function} transitionTo
+     * Forwards to [[Router.transitionTo]]
      */
     transitionTo,
 
     /**
-     * @lends Route
-     * @see Router.updateQuery
+     * @type {Function} updateQuery
+     * Forwards to [[Router.updateQuery]]
      */
     updateQuery,
   });

@@ -19,55 +19,42 @@ Your source of bananas for all-things routing with
                     _,##'`-._,##'`
                       `-._,##'`
 
-## `Route: Function`
+The [[package | page-fu]] exposes a [[construct | Route]], a few [[helpers |
+Router]], and a bunch of decorators to provide some structure around routing
+with page.js.
 
-The `Route` export of this package allows you to define a route handler.
+While page.js is elegant and powerful, building an application around it will
+usually lead to the creation of some constructs and abstractions. page-fu is a
+collection of such abstractions that will support your routing logic.
 
-A route handler is responsible for preparing the data needed to render the UI
-and perform any interactions with external services (like the API) on the UI's
-behalf.
+## Installation
 
-Route handlers are equipped with a few tools under their belts to make your
-life convenient but there's very little magic involved.
+Install the package from NPM:
 
-### Route activation
+    npm install --save page-fu
 
-A route becomes activated when a transition is dispatched with a path that
-exactly matches the path it was registered for. For example, consider the
-following route definitions:
+Please note that the sources are distributed in ES6 format and require a module
+loader like [webpack](https://webpack.js.org/) or
+[browserify](http://browserify.org/) to work. I am not interested in
+distributing compiled versions.
 
-```javascript
-// screens/A/route.js
-export default { path: '/patients/new' };
+## What's inside
 
-// screens/B/route.js
-export default { path: '/patients/:id' };
-```
+The main value of this package is the [[route handling construct | Route]] that
+aids in managing routing logic. It decorates your existing route handlers (what
+you pass to [`page(String,
+Function|Object)`](https://visionmedia.github.io/page.js/#pagepath-callback-
+callback-)) with extra functionality in a way that is not obtrusive.
 
-The route handler for screen A will be considered active IFF the pathname is
-`/patients/new` and not `/patients/3`. `pamm-routing` will consider this to be
-your intent when it scans your routes and arranges the routes in the correct
-order to achieve this behavior.
+Moreover, the package focuses on the testability of route handlers so you will
+find that everything it provides is (somewhat) easily testable. Minimal voodoo
+involved - promise!
 
-### Route life-cycle
+Get started by looking into the [[Route]] construct. You can also refer to the
+the [[package | page-fu]] reference to see what symbols are exported for your
+use and how to use them if you're unfamiliar with ES6 packages.
 
-At the very minimum, a route handler is a function that accepts a context
-and a `next` callback:
+## Testing
 
-```javascript
-import { redirectTo } from 'pamm-routing';
-
-export default function mySimpleRoute(ctx, next) {
-  if (isLoggedIn()) {
-    redirectTo('/member');
-  }
-  else {
-    redirectTo('/login')
-  }
-}
-```
-
-### Route state
-
-Each Route handler has a private [[state | PAMMRouting.Route]] that it may
-utilize to store things during its lifetime.
+Refer to the [[testing guide | ./doc/testing.md]] to learn how to test every
+inch of your route handlers.

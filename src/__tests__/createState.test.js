@@ -19,8 +19,6 @@ describe('page-fu.createState', function() {
 
         done();
       },
-
-      exit() {},
     });
 
     route.enter({})
@@ -41,8 +39,6 @@ describe('page-fu.createState', function() {
 
         done();
       },
-
-      exit() {},
     });
 
     route.enter({})
@@ -50,8 +46,6 @@ describe('page-fu.createState', function() {
 
   it('invokes stateDidChange on change', function() {
     const route = createState({
-      enter() {},
-      exit() {},
       stateDidChange() {},
     });
 
@@ -66,8 +60,6 @@ describe('page-fu.createState', function() {
   it('does not invoke stateDidChange upon entering', function(done) {
     const stateDidChange = sinon.spy(function() {});
     const route = createState({
-      enter() {},
-      exit() {},
       stateDidChange,
     });
 
