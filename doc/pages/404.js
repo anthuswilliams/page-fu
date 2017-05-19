@@ -3,7 +3,7 @@ const { PropTypes } = React;
 
 const NotFound = React.createClass({
   propTypes: {
-    goBack: PropTypes.func.isRequired,
+    redirectUrl: PropTypes.string.isRequired,
   },
 
   render() {
@@ -22,7 +22,7 @@ const NotFound = React.createClass({
         </div>
 
         <div className="margin-tb-m">
-          <a onClick={this.props.goBack}>
+          <a href={this.props.redirectUrl}>
             Okay, take me somewhere that <em>does</em> exist.
           </a>
         </div>

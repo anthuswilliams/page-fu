@@ -1,7 +1,6 @@
 import ensureNextIsCalled from './ensureNextIsCalled';
 
 /**
- * @module
  * @preserveOrder
  *
  * Decorate your route with the ability to transition between (internal) states.
@@ -11,9 +10,9 @@ import ensureNextIsCalled from './ensureNextIsCalled';
  * Here's an example that tracks an internal counter and outputs it to the
  * console when it changes:
  *
- *     import { createState } from 'page-fu';
+ *     import { withState } from 'page-fu';
  *
- *     export default createState({
+ *     export default withState({
  *       getInitialState() {
  *         return { value: 0 };
  *       },
@@ -41,12 +40,10 @@ import ensureNextIsCalled from './ensureNextIsCalled';
  * @param {Route} instance
  * @return {Route}
  */
-export default function createState(instance) {
-  const { enter = Function.prototype, exit = Function.prototype } = instance;
+export default function withState(instance) {
+  const { enter = Function.prototype } = instance;
+  const exit = ensureNextIsCalled(instance.exit);
   const state = {};
-  const emitChange = function() {
-    this.stateDidChange();
-  };
 
   const replace = nextState => {
     Object.keys(state).forEach(key => { delete state[key]; });
@@ -61,7 +58,7 @@ export default function createState(instance) {
     },
 
     exit(ctx, next) {
-      ensureNextIsCalled(exit.bind(this), ctx, (err) => {
+      exit.call(this, ctx, err => {
         this.clearState();
 
         next(err);
@@ -94,7 +91,7 @@ export default function createState(instance) {
     setState(partialState) {
       Object.assign(state, partialState);
 
-      emitChange.call(this);
+      this.stateDidChange();
     },
 
     /**
@@ -105,7 +102,7 @@ export default function createState(instance) {
     replaceState(newState) {
       replace(newState);
 
-      emitChange.call(this);
+      this.stateDidChange();
     },
 
     /**
@@ -120,9 +117,6 @@ export default function createState(instance) {
      *
      * A hook that is invoked when the state changes through calls to
      * [[#setState]], [[#replaceState]] or [[#clearState]].
-     *
-     * > This hook will NOT be invoked if you're using the [[activation guard
-     * > | ./installActivationGuard.js]] and the route is not active.
      */
     stateDidChange: instance.stateDidChange || Function.prototype,
   })

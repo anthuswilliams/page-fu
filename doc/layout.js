@@ -21,13 +21,6 @@ module.exports = [
               on: 'js'
             }
           },
-          {
-            name: 'CJS::NamespaceIndex',
-            match: {
-              by: 'namespace',
-              on: 'js'
-            }
-          },
         ]
       },
 

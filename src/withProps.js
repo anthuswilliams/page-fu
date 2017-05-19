@@ -3,15 +3,13 @@ import history from './history';
 import ensureNextIsCalled from './ensureNextIsCalled';
 
 /**
- * @module
+ * Inject named parameters and query parameters as "[[props | withProps@props]]"
+ * into your route.
  *
- * Inject named parameters and query parameters as "[[props |
- * createProps~Props]]" into your route.
- *
- *     import { createProps } from 'page-fu'
+ *     import { withProps } from 'page-fu'
  *     import page from 'page'
  *
- *     const Route = createProps({
+ *     const Route = withProps({
  *       enter() {
  *         console.log(this.props.params)
  *         console.log(this.props.query)
@@ -38,30 +36,26 @@ import ensureNextIsCalled from './ensureNextIsCalled';
  * @param {Object} route
  * @return {Object}
  *
- * @typedef {createProps~Props}
- *          A map of props computed from page's context and the URL that
- *          the route will be injected with.
- *
- * @property {Object.<String, String>} params
- *           The parameters that the route was activated with (that is, what's
- *           found in `ctx.params` from page's context.)
- *
- * @property {Object.<String, String>} query
- *           The current query parameters.
- *
- * @property {Object} location
- * @property {String} location.pathname
- *
  */
-export default function createProps(instance) {
-  const { enter = Function.prototype, exit = Function.prototype } = instance;
+export default function withProps(instance) {
+  const { enter = Function.prototype } = instance;
+  const exit = ensureNextIsCalled(instance.exit)
 
   let stopListeningToHistory;
 
   return Object.assign({}, instance, {
-
     /**
-     * @property {createProps~Props} [props={}]
+     * @property {Object} [props={}]
+     * @property {Object.<String, String>} props.params
+     *           The parameters that the route was activated with (that is, what's
+     *           found in `ctx.params` from page's context.)
+     *
+     * @property {Object.<String, String>} props.query
+     *           The current query parameters.
+     *
+     * @property {Object} props.location
+     * @property {String} props.location.pathname
+     *
      */
     props: null,
 
@@ -91,7 +85,7 @@ export default function createProps(instance) {
     },
 
     exit(ctx, next) {
-      ensureNextIsCalled(exit.bind(this), ctx, (err) => {
+      exit.call(this, ctx, err => {
         stopListeningToHistory();
         stopListeningToHistory = null;
 

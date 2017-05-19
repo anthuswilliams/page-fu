@@ -3,17 +3,21 @@ const passThrough = (ctx, next) => { next() };
 /**
  * @module
  *
- * A decorator that will produce a well-defined route that specifies both an
- * enter and an exit hook from either a function to be used as the sole "enter"
- * hook, or an object that defines one or both of an enter and an exit hook.
+ * Produce a route *object* that specifies both an `enter` and an `exit` hook
+ * given either a function to be used as the sole "enter" hook, or an object
+ * that defines one or both hooks.
  *
- *     import { morphIntoObject } from 'page-fu';
+ *     import { withHooks } from 'page-fu';
  *
- *     const route = morphIntoObject(function myEnter(ctx, next) {})
+ *     assertHasBothHooks(withHooks(function myEnter(ctx, next) {}))
+ *     assertHasBothHooks(withHooks({ enter() {} }))
+ *     assertHasBothHooks(withHooks({ exit() {} }))
  *
- *     console.assert(typeof route === 'object')
- *     console.assert(typeof route.enter === 'function')
- *     console.assert(typeof route.exit === 'function')
+ *     function assertHasBothHooks(route) {
+ *       console.assert(typeof route === 'object')
+ *       console.assert(typeof route.enter === 'function')
+ *       console.assert(typeof route.exit === 'function')
+ *     }
  *
  * @param  {Function|Object} spec
  *
@@ -21,11 +25,11 @@ const passThrough = (ctx, next) => { next() };
  * @return {Function} route.enter
  * @return {Function} route.exit
  */
-export default function morphIntoObject(spec = {}) {
+export default function withHooks(spec = {}) {
   if (typeof spec === 'function') {
     return {
       /**
-       * @method
+       * @type {Function}
        *
        * The `enter` routine that gets called when the route is activated.
        *

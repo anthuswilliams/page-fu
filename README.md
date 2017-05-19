@@ -35,15 +35,14 @@ Install the package from NPM:
 
 Please note that the sources are distributed in ES6 format and require a module
 loader like [webpack](https://webpack.js.org/) or
-[browserify](http://browserify.org/) to work. I am not interested in
-distributing compiled versions.
+[browserify](http://browserify.org/) to work. There are currently no plans to
+distribute compiled versions.
 
 ## What's inside
 
-The main value of this package is the [[route handling construct | Route]] that
-aids in managing routing logic. It decorates your existing route handlers (what
-you pass to [`page(String,
-Function|Object)`](https://visionmedia.github.io/page.js/#pagepath-callback-
+The gem of this package is the [[route handling construct | Route]]. It
+decorates your existing route handlers (what you pass to [`page(String,
+Function|Object)`](https://visionmedia.github.io/page.js /#pagepath-callback-
 callback-)) with extra functionality in a way that is not obtrusive.
 
 Moreover, the package focuses on the testability of route handlers so you will

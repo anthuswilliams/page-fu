@@ -1,14 +1,14 @@
 /**
- * @module createBoundInterface
+ * Create an object whose functions are permanently bound to it (i.e. "first-
+ * class" functions).
  *
- * Create an object whose functions will be permanently bound to it. After
- * applying this decorator, you no longer need to call
- * `Function.prototype.bind()` when you're passing around references to your
- * route handler's functions.
+ * After applying this decorator, you no longer need to call [bind](https://deve
+ * loper.mozilla.org/en/docs/Web/JavaScript/Reference/Global_objects/Function/bi
+ * nd) when you're passing around references to your route handler's functions.
  *
  * Example:
  *
- *     import { createBoundInterface } from 'page-fu';
+ *     import { withFirstClassMethods } from 'page-fu';
  *
  *     class Counter {
  *       constructor() {
@@ -24,7 +24,7 @@
  *       }
  *     }
  *
- *     const boundCounter = createBoundInterface(new Counter());
+ *     const boundCounter = withFirstClassMethods(new Counter());
  *
  *     // grab references to instance functions; no need to .bind():
  *     const { increment } = boundCounter;
@@ -34,13 +34,10 @@
  *     // pass them around:
  *     setTimeout(boundCounter.printValue, 0); // => "Value = 1"
  *
- * > If you've used React before, this decorator is similar to what they
- * > provided through the `React.createClass` helper.
- *
  * @param {Object} object
  * @return {Object}
  */
-export default function createBoundInterface(object) {
+export default function withFirstClassMethods(object) {
   return Object.keys(object).reduce(function(bound, key) {
     if (typeof object[key] === 'function') {
       bound[key] = object[key].bind(bound);

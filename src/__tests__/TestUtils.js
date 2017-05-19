@@ -1,5 +1,6 @@
 import sinon from 'sinon';
 import { assert } from 'chai';
+import page from 'page';
 
 sinon.assert.expose(assert, { prefix: "" });
 
@@ -22,4 +23,50 @@ export function sinonSuite(mochaSuite, options = {}) {
   });
 
   return api;
+}
+
+
+export function pageSuite(mochaSuite, { draw }) {
+  let callbacks, exits;
+
+  mochaSuite.beforeEach(function() {
+    global.window = {
+      addEventListener() {},
+      removeEventListener() {},
+    };
+
+    global.history = {
+      pushState() {},
+    };
+
+    global.document = {
+      addEventListener() {},
+      removeEventListener() {},
+    };
+
+    callbacks = page.callbacks;
+    exits = page.exits;
+
+    page.callbacks = [];
+    page.exits = [];
+    page('/__hadouken__', () => {});
+
+    draw();
+
+    page.start({ dispatch: false, hashbang: true });
+    page('/__hadouken__');
+  })
+
+  afterEach(function() {
+    page('/__hadouken__');
+    page.stop();
+    page.callbacks = callbacks;
+    page.exits = exits;
+
+    delete global.window;
+    delete global.history;
+    delete global.document;
+  });
+
+  return page;
 }

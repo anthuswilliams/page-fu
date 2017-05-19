@@ -155,7 +155,7 @@ describe('MyRoute.parseFile', function() {
 ## Testing transitions
 
 There's nothing special here since the routes will be invoking [[instance
-methods | exposeRoutingAPIs]] to perform routing side-effects so you would
+methods | withRoutingAPIs]] to perform routing side-effects so you would
 test them like any other API.
 
 For example, to verify that the following route will perform a redirect in case

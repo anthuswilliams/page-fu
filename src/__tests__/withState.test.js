@@ -1,7 +1,7 @@
 import { assert, sinonSuite } from './TestUtils';
-import createState from '../createState';
+import withState from '../withState';
 
-describe('page-fu.createState', function() {
+describe('page-fu.withState', function() {
   const sinon = sinonSuite(this);
 
   it('starts with the initial state', function(done) {
@@ -9,7 +9,7 @@ describe('page-fu.createState', function() {
       foo: 'bar'
     };
 
-    const route = createState({
+    const route = withState({
       getInitialState() {
         return Object.assign({}, initialState);
       },
@@ -25,7 +25,7 @@ describe('page-fu.createState', function() {
   })
 
   it('lets me transition the state', function(done) {
-    const route = createState({
+    const route = withState({
       getInitialState() {
         return { a: 1 };
       },
@@ -45,7 +45,7 @@ describe('page-fu.createState', function() {
   });
 
   it('invokes stateDidChange on change', function() {
-    const route = createState({
+    const route = withState({
       stateDidChange() {},
     });
 
@@ -59,7 +59,7 @@ describe('page-fu.createState', function() {
 
   it('does not invoke stateDidChange upon entering', function(done) {
     const stateDidChange = sinon.spy(function() {});
-    const route = createState({
+    const route = withState({
       stateDidChange,
     });
 

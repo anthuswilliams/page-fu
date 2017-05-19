@@ -12,7 +12,7 @@ import history from './history';
  * Normally you wouldn't want to reach out to this directly. A better approach
  * would be to restrict routing side-effects to your route handlers, in which
  * case they'd access these APIs through the decorations provided by
- * [[exposeRoutingAPIs]].
+ * [[withRoutingAPIs]].
  *
  * However, in the case that you happen to need to interact with the router
  * outside of a handler's context, you can use these APIs.

@@ -1,9 +1,9 @@
-import createState from './createState';
-import createProps from './createProps';
-import createBoundInterface from './createBoundInterface';
-import exposeRoutingAPIs from './exposeRoutingAPIs';
-import installActivationGuard from './installActivationGuard';
-import morphIntoObject from './morphIntoObject';
+import withState from './withState';
+import withProps from './withProps';
+import withFirstClassMethods from './withFirstClassMethods';
+import withRoutingAPIs from './withRoutingAPIs';
+import withAtomicity from './withAtomicity';
+import withHooks from './withHooks';
 import { flow } from 'lodash';
 
 /**
@@ -13,35 +13,27 @@ import { flow } from 'lodash';
  * Create a "route handler" equipped with all the capabilities provided by
  * page-fu:
  *
- * - state management via [[createState]]
- * - routing props via [[createProps]]
- * - exclusivity via the [[activation guard | installActivationGuard]]
- * - [[bound methods | createBoundInterface]] for convenience
- * - [[routing APIs | exposeRoutingAPIs]] for convenience
- * - enter and exit hooks via [[morphIntoObject]]
+ * - state management via [[withState]]
+ * - routing props via [[withProps]]
+ * - [[atomicity | withAtomicity]]
+ * - [[first-class functions | withFirstClassMethods]] for convenience
+ * - direct access to [[routing APIs | withRoutingAPIs]] for convenience
+ * - good manners via [[withHooks]]
  *
  * `Route` embraces the simplicity of page.js and its middleware architecture in
- * that it's just a pipeline of functions, or _decorators_, that get applied to
- * your route handler specification and augments it with super powers.
+ * that it's just a pipeline of functions that your route handler specification
+ * goes through and then comes out of augmented with super powers.
  *
  * Under the hoods, this is the definition of the `Route` function (at the time
  * of writing, anyway):
  *
  *     flow([
- *       // ensure there's an enter() and an exit hook() in the spec,
- *       // or if it's just a function, turn it into an object and add a
- *       // blank exit() hook:
- *       morphIntoObject,
- *       // add state capabilities:
- *       createState,
- *       // add prop capabilities:
- *       createProps,
- *       // add routing capabilities:
- *       exposeRoutingAPIs,
- *       // install this guard thing:
- *       installActivationGuard,
- *       // automatically bind all instance methods:
- *       createBoundInterface
+ *       withHooks,
+ *       withState,
+ *       withProps,
+ *       withRoutingAPIs,
+ *       withAtomicity,
+ *       withFirstClassMethods
  *     ])
  *
  * If you don't care about one or another of the decorators provided by default,
@@ -58,6 +50,9 @@ import { flow } from 'lodash';
  *     page('/users/:userId', UserRoute.enter);
  *     page.exit('/users/:userId', UserRoute.exit);
  *
+ * If this example looked silly to you (it probably did!) then you may want to
+ * take a look at a [[more complete example | ../doc/examples.md]].
+ *
  * @param {Object} spec
  *        Your route definition.
  *
@@ -66,11 +61,10 @@ import { flow } from 'lodash';
  *         all the APIs and properties exposed by the decorators.
  */
 export default flow([
-  morphIntoObject,
-  createState,
-  createProps,
-  exposeRoutingAPIs,
-  installActivationGuard,
-  createBoundInterface
+  withHooks,
+  withState,
+  withProps,
+  withRoutingAPIs,
+  withAtomicity,
+  withFirstClassMethods,
 ]);
-

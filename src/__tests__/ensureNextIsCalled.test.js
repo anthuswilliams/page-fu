@@ -7,11 +7,11 @@ describe('page-fu.ensureNextIsCalled', function() {
   it('calls next automatically if the exit handler does not accept it', function() {
     const fakeNext = sinon.stub();
 
-    ensureNextIsCalled(function() {}, {}, fakeNext);
+    ensureNextIsCalled(function() {})({}, fakeNext);
 
     assert.calledOnce(fakeNext);
 
-    ensureNextIsCalled(function(ctx) {}, {}, fakeNext);  // eslint-disable-line no-unused-vars
+    ensureNextIsCalled(function(ctx) {})({}, fakeNext);  // eslint-disable-line no-unused-vars
 
     assert.calledTwice(fakeNext);
   });
@@ -20,7 +20,7 @@ describe('page-fu.ensureNextIsCalled', function() {
     const fakeNext = sinon.stub();
     const error = new Error();
 
-    ensureNextIsCalled(function() { throw error; }, {}, fakeNext);
+    ensureNextIsCalled(function() { throw error; })({}, fakeNext);
 
     assert.calledWithExactly(fakeNext, error);
   })
@@ -28,7 +28,7 @@ describe('page-fu.ensureNextIsCalled', function() {
   it('does not call #next if the function accepts 2 arguments', function() {
     const fakeNext = sinon.stub();
 
-    ensureNextIsCalled(function(ctx, next) {}, {}, fakeNext); // eslint-disable-line no-unused-vars
+    ensureNextIsCalled(function(ctx, next) {})({}, fakeNext); // eslint-disable-line no-unused-vars
 
     assert.notCalled(fakeNext);
   })

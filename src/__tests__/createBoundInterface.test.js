@@ -1,7 +1,7 @@
-import subject from '../createBoundInterface';
+import subject from '../withFirstClassMethods';
 import { assert, sinonSuite } from './TestUtils';
 
-describe('page-fu.createBoundInterface', function() {
+describe('page-fu.withFirstClassMethods', function() {
   const sinon = sinonSuite(this);
 
   it('binds functions to the object', function() {
