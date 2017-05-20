@@ -25,7 +25,7 @@ const Router = {
    * @return {void}
    */
   transitionTo(pathname) {
-    page(pathname);
+    page.show(pathname);
   },
 
   /**
@@ -55,7 +55,7 @@ const Router = {
    * @return {void}
    */
   updateQuery(partialQuery) {
-    const nextQuery = Object.assign({}, queryString.parse(history.location.search), partialQuery);
+    const nextQuery = Object.assign({}, queryString.parse(window.location.search), partialQuery);
     const withoutFalseys = discardFalseyValues(nextQuery);
 
     setQuery(withoutFalseys);
@@ -72,7 +72,7 @@ const Router = {
    */
   replaceQuery(nextQuery) {
     const withoutFalseys = Object.keys(nextQuery).reduce(function(map, key) {
-      if (nextQuery[key] !== null) {
+      if (nextQuery[key] !== null && nextQuery[key] !== undefined) {
         map[key] = nextQuery[key];
       }
 
@@ -85,7 +85,7 @@ const Router = {
 
 function setQuery(nextQuery) {
   const nextQueryString = queryString.stringify(nextQuery);
-  const { pathname } = history.location;
+  const { pathname } = window.location;
   const withQueryString = nextQueryString ?
     `${pathname}?${nextQueryString}` :
     pathname

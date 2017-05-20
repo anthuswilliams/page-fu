@@ -1,11 +1,13 @@
-import { flow } from 'lodash';
-import { assert, sinonSuite, pageSuite } from './TestUtils';
+import { assert, sinonSuite, simulateDOMEnvironment } from './TestUtils';
+import flow from '../flow';
 import history from '../history';
 import withHooks from '../withHooks';
 import withProps from '../withProps';
 
 describe('page-fu.withProps', function() {
   const sinon = sinonSuite(this);
+
+  simulateDOMEnvironment(this);
 
   it('exposes `ctx.params` as `this.props.params` to the instance', function(done) {
     const context = {
@@ -46,10 +48,10 @@ describe('page-fu.withProps', function() {
     subject.enter(context);
   });
 
-  it('exposes `ctx.querystring` as `this.props.query` to the instance', function(done) {
-    const context = {
-      querystring: '?foo=bar'
-    };
+  it('exposes `window.location.search` as `this.props.query` to the instance', function(done) {
+    const context = { querystring: '?ignored=1' };
+
+    window.location.search = '?foo=bar'
 
     const subject = withProps({
       enter() {
@@ -73,7 +75,7 @@ describe('page-fu.withProps', function() {
 
     route.enter({});
 
-    history.push(history.location.pathname + '?foo=bar');
+    history.push(window.location.pathname + '?foo=bar');
 
     assert.calledOnce(route.queryParamsDidChange)
     assert.deepEqual(route.props.query, { foo: 'bar' });
@@ -94,41 +96,11 @@ describe('page-fu.withProps', function() {
     route.enter({}, function() {});
 
     route.exit({}, function() {
-      history.push(history.location.pathname + '?foo=bar');
+      history.push(window.location.pathname + '?foo=bar');
 
       assert.notCalled(route.queryParamsDidChange)
 
       done();
     });
-  })
-
-  describe('prop changes', function() {
-    let AnimalRoute;
-
-    const page = pageSuite(this, {
-      draw() {
-        AnimalRoute = withProps({
-          enter() {
-            console.log('animal entered!', this.props);
-          },
-
-          queryParamsDidChange() {
-            console.log('animal query changed!', this.props.query)
-          },
-
-          exit() {
-            console.log('animal exited!', this.props)
-          }
-        })
-
-        page('/animals/:id', AnimalRoute.enter.bind(AnimalRoute));
-        page.exit('/animals/:id', AnimalRoute.exit.bind(AnimalRoute));
-      }
-    })
-
-    it('what happens on prop change?', function() {
-      page('/animals/1')
-      page('/animals/2')
-    })
   })
 });

@@ -1,8 +1,10 @@
 import Route from '../Route';
-import { assert, sinonSuite } from './TestUtils';
+import { assert, sinonSuite, simulateDOMEnvironment } from './TestUtils';
 
 describe('page-fu.Route', function() {
   const sinon = sinonSuite(this);
+
+  simulateDOMEnvironment(this);
 
   describe('construction', function() {
     const subject = Route();

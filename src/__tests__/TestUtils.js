@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import { assert } from 'chai';
 import page from 'page';
+import FakeDOM from './FakeDOM';
 
 sinon.assert.expose(assert, { prefix: "" });
 
@@ -25,25 +26,29 @@ export function sinonSuite(mochaSuite, options = {}) {
   return api;
 }
 
+export function simulateDOMEnvironment(mochaSuite, options) {
+  mochaSuite.beforeEach(function() {
+    Object.keys(FakeDOM).forEach(key => { global[key] = FakeDOM[key] });
+  })
+
+  const removeDOM = () => {
+    Object.keys(FakeDOM).reverse().forEach(key => { delete global[key] });
+  }
+
+  if (!options || options.removeAutomatically !== false) {
+    mochaSuite.afterEach(removeDOM);
+  }
+  else {
+    return removeDOM;
+  }
+}
 
 export function pageSuite(mochaSuite, { draw }) {
   let callbacks, exits;
 
+  const removeDOM = simulateDOMEnvironment(mochaSuite, { removeAutomatically: false });
+
   mochaSuite.beforeEach(function() {
-    global.window = {
-      addEventListener() {},
-      removeEventListener() {},
-    };
-
-    global.history = {
-      pushState() {},
-    };
-
-    global.document = {
-      addEventListener() {},
-      removeEventListener() {},
-    };
-
     callbacks = page.callbacks;
     exits = page.exits;
 
@@ -62,11 +67,9 @@ export function pageSuite(mochaSuite, { draw }) {
     page.stop();
     page.callbacks = callbacks;
     page.exits = exits;
-
-    delete global.window;
-    delete global.history;
-    delete global.document;
   });
+
+  removeDOM();
 
   return page;
 }

@@ -78,8 +78,6 @@ export const transitionTo = forwardToRouter('transitionTo');
  */
 export const updateQuery = forwardToRouter('updateQuery');
 
-export { history } from './history';
-
 /** @property {withFirstClassMethods} */
 export { default as withFirstClassMethods } from './withFirstClassMethods';
 

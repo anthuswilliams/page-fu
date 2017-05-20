@@ -32,6 +32,13 @@ import ensureNextIsCalled from './ensureNextIsCalled';
  *
  *     // => "woah!"
  *
+ * > **Note on changes to query parameters**
+ * >
+ * > Unlike other libraries that choose to monkey-patch `window.history` in
+ * > order to sniff changes to the URL and then re-parse the query, page-fu
+ * > expects you to use its APIs to modify the queryString where it will
+ * > internally take care of propagating those changes up to the location bar
+ * > and down to your routes.
  *
  * @param {Object} route
  * @return {Object}
@@ -68,14 +75,14 @@ export default function withProps(instance) {
     queryParamsDidChange: instance.queryParamsDidChange || Function.prototype,
 
     enter(ctx, next) {
-      stopListeningToHistory = history.listen(location => {
+      stopListeningToHistory = history.listen(() => {
         this.props.query = queryString.parse(location.search);
         this.queryParamsDidChange();
       });
 
       this.props = {
         params: ctx.params,
-        query: queryString.parse(ctx.querystring),
+        query: queryString.parse(location.search),
         location: {
           pathname: ctx.pathname,
         }

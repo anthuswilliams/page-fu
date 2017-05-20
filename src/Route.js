@@ -4,7 +4,7 @@ import withFirstClassMethods from './withFirstClassMethods';
 import withRoutingAPIs from './withRoutingAPIs';
 import withAtomicity from './withAtomicity';
 import withHooks from './withHooks';
-import { flow } from 'lodash';
+import flow from './flow';
 
 /**
  * @module Route
