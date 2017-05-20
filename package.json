@@ -7,7 +7,7 @@
   "repository": "amireh/page-fu",
   "description": "page.js routing sugars.",
   "scripts": {
-    "docs": "megadoc",
+    "docs": "megadoc && echo '/* /:splat 301!' > doc/compiled/_redirects",
     "test": "mocha -r babel-core/register 'src/**/*.test.js'"
   },
   "dependencies": {
