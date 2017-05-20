@@ -1,4 +1,8 @@
 const FakeDOM = {};
+const Event = function Event(name) {
+  this.name = name;
+};
+
 const location = {
   pathname: '',
   search: '',
@@ -15,6 +19,7 @@ const history = {
 };
 
 FakeDOM.window = {
+  Event,
   listeners: [],
   dispatchEvent(event) {
     this.listeners
@@ -41,8 +46,6 @@ FakeDOM.document = {
   removeEventListener() {},
 };
 
-FakeDOM.Event = function(name) {
-  this.name = name;
-}
+FakeDOM.Event = Event;
 
 export default FakeDOM;
