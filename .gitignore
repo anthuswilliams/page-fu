@@ -1,7 +1,6 @@
 /node_modules
 /doc/compiled
 npm-debug.log
-/.megadoc
 
 /*.sublime-project
 /*.sublime-workspace

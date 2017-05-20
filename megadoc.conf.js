@@ -16,6 +16,7 @@ module.exports = {
       'articles': '/',
       '/readme.html': '/index.html',
     },
+    runtimeOutputPath: 'megadoc-assets',
     layoutOptions: {
       banner: false,
       customLayouts: require('./doc/layout'),
