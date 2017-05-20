@@ -1,3 +1,5 @@
 /node_modules
 /src/__tests__
+/doc/compiled
+/.megadoc
 npm-debug.log
