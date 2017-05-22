@@ -86,7 +86,7 @@ export default function withProps(instance) {
 
       this.props = {
         params: ctx.params,
-        query: queryString.parse(location.search),
+        query: queryString.parse(ctx.querystring),
         location: {
           pathname: ctx.pathname,
         }
