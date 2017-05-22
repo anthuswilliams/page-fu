@@ -75,6 +75,10 @@ export default function withProps(instance) {
     queryParamsDidChange: instance.queryParamsDidChange || Function.prototype,
 
     enter(ctx, next) {
+      if (stopListeningToHistory) {
+        stopListeningToHistory();
+      }
+
       stopListeningToHistory = history.listen(() => {
         this.props.query = queryString.parse(location.search);
         this.queryParamsDidChange();
@@ -93,8 +97,10 @@ export default function withProps(instance) {
 
     exit(ctx, next) {
       exit.call(this, ctx, err => {
-        stopListeningToHistory();
-        stopListeningToHistory = null;
+        if (stopListeningToHistory) {
+          stopListeningToHistory();
+          stopListeningToHistory = null;
+        }
 
         this.props = null;
 
