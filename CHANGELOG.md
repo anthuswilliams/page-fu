@@ -1,3 +1,9 @@
+## 1.0.3
+
+- `withProps` now uses `ctx.querystring` for the initial query parameter
+  values. This change is necessary to reflect query strings found in
+  internal page transitions (prior to `location` being modified by page.js)
+
 ## 1.0.2
 
 - `withProps` is now idempotent to prevent it from throwing errors itself
