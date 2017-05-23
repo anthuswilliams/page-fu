@@ -48,10 +48,9 @@ describe('page-fu.withProps', function() {
     subject.enter(context);
   });
 
-  it('exposes `window.location.search` as `this.props.query` to the instance', function(done) {
-    const context = { querystring: '?ignored=1' };
-
-    window.location.search = '?foo=bar'
+  it('exposes `ctx.querystring` as `this.props.query` to the instance', function(done) {
+    const context = { querystring: '?foo=bar' };
+    window.location.search = '?ignored=1'
 
     const subject = withProps({
       enter() {

@@ -59,7 +59,7 @@ export default function withState(instance) {
 
     exit(ctx, next) {
       exit.call(this, ctx, err => {
-        this.clearState();
+        replace(this.getInitialState() || {});
 
         next(err);
       });
